@@ -13,9 +13,13 @@
 *.userprefs
 *.pidb
 *.booproj
+*.png
+*.csv
 
 # Unity3D generated meta files
 *.pidb.meta
+*.png.meta
+*.csv.meta
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
