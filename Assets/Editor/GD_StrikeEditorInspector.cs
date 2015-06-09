@@ -20,7 +20,7 @@ public class GD_StrikeEditorInspector : GD_EditorBase<GD_StrikeEditor>
             isFirst = true;
             this.Target.Reset();
 			this.Target.LoadCsv();
-            this.Target.LoadXml();
+            //this.Target.LoadXml();
             this.Target.Init();
         }
 

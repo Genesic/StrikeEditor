@@ -15,11 +15,13 @@
 *.booproj
 *.png
 *.csv
+*.json
 
 # Unity3D generated meta files
 *.pidb.meta
 *.png.meta
 *.csv.meta
+*.json.meta
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
