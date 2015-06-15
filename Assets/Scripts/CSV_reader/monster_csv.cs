@@ -17,7 +17,7 @@ public class monster_csv : CSV_reader {
 		public string name;
 		public int type;
 		public int star;
-		public int hard;
+		public string hard;
 		public int hp;
 		public int shield_hp;
 		public int gravity;
@@ -26,27 +26,34 @@ public class monster_csv : CSV_reader {
 		public int def;
 		public ATKpoint[] atk_point;
 		public float scale;
+		public string chapter;
+		public int attr;
 	};
 	
 	private List<string> keys;
 	
 	public Dictionary <int, csv_row> csv_table = new Dictionary<int, csv_row>();
+	public Dictionary <string, int> monster_chapter = new Dictionary<string, int>();
+	public Dictionary <string, int> monster_hard = new Dictionary<string, int>();
+	public Dictionary <int, int> monster_attr = new Dictionary<int, int>();
 	
 	public void init () {
 		keys = new List<string> (new string[] {
 						"編號",
 						"怪物id",
 						"名稱-PM",
+						"屬性-PM",
 						"怪物類型",
 						"星等-PM",
-						"難度-PM",
+						"難度說明-PM",
 						"怪物HP",
 						"盾-血量",
 						"gravity",
 						"擊殺獎勵-1-機率",
 						"擊殺獎勵-2-數量",
 						"怪物DEF",
-						"縮放比例"
+						"縮放比例",
+						"篇章"
 				});
 		for (int i = 1; i <= 5; i++) {
 			string skill_name = "攻擊點-"+i+"-技能-PM";
@@ -85,11 +92,14 @@ public class monster_csv : CSV_reader {
 			case "名稱-PM":
 				data.name = row[item.Key];
 				break;
+			case "屬性-PM":
+				data.attr = string.IsNullOrEmpty(row[item.Key])? 0 : int.Parse(row[item.Key]);
+				break;
 			case "星等-PM":
 				data.star = string.IsNullOrEmpty(row[item.Key])? 0 : int.Parse(row[item.Key]);
 				break;
-			case "難度-PM":
-				data.hard = string.IsNullOrEmpty(row[item.Key])? 0 : int.Parse(row[item.Key]);
+			case "難度說明-PM":
+				data.hard = row[item.Key];
 				break;
 			case "怪物HP":
 				data.hp = string.IsNullOrEmpty(row[item.Key])? 0 : int.Parse(row[item.Key]);
@@ -112,6 +122,9 @@ public class monster_csv : CSV_reader {
 			case "縮放比例":
 				data.scale = string.IsNullOrEmpty(row[item.Key])? 0.0f : Convert.ToSingle(row[item.Key]);
 				break;
+			case "篇章":
+				data.chapter = row[item.Key];
+				break;
 			default : 
 				for( int i = 1; i<=5 ; i++ ){
 					if( item.Value.Equals( "攻擊點-"+i+"-技能-PM" ) ){
@@ -130,5 +143,18 @@ public class monster_csv : CSV_reader {
 		}
 		data.atk_point = point;
 		csv_table.Add (id, data);
+
+		if ( !monster_chapter.ContainsKey (data.chapter) && data.chapter.Length > 0 )
+			monster_chapter.Add( data.chapter, 1 );
+
+		if (!monster_hard.ContainsKey (data.hard) && data.hard.Length > 0) {
+			if( data.hard.IndexOf("頭目") == -1 && data.hard.IndexOf("新手教學") == -1 )
+				monster_hard.Add (data.hard, 1);
+		}
+
+		if ( !monster_attr.ContainsKey (data.attr) && data.attr > 0 )
+			monster_attr.Add( data.attr, 1 );
+
+		//monster_type.Add ();
 	}
 }

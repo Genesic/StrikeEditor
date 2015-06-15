@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 namespace Gamesofa
 {
@@ -42,9 +43,15 @@ namespace Gamesofa
 		public section_csv section_data;
 		public formation_csv formation_data;
 
+		public int select_chapter;
+		public int use_soldier_num;
+
 		void Update()
 		{
 			ShowCoordinate();
+			if (select_chapter > 0) {
+				Debug.Log (select_chapter);
+			}
 		}
 
         //初始化
@@ -84,12 +91,6 @@ namespace Gamesofa
 			section_data.init ();
 			formation_data.init ();
 		}
-
-        //XML 初始化
-		public void LoadXml()
-        {
-            GD_XmlData.Init();
-        }
 
         //讀檔
         public void LoadJson(string jsonFile)
@@ -376,6 +377,50 @@ namespace Gamesofa
                 }
             }
         }
+		
+		public struct section_info{
+			public int section_id;
+			public string section_name;
+			public int chapter_id;
+			public string chapter_name;
+		};
+
+		// 用battle_id取得section_id
+		public int getSectionByBattleId (int battle_id){
+			return battle_data.csv_table [battle_id].section;
+		}
+
+		// 用section_id取得 章 跟 節 資料
+		public section_info getSectionInfoById( int section_id ){
+			section_info data = new section_info ();
+			data.chapter_id = section_data.csv_table [section_id].chapter_id;
+			data.section_id = section_data.csv_table [section_id].section_id;
+			data.chapter_name = section_data.csv_table [section_id].chapter_name;
+			data.section_name = section_data.csv_table [section_id].section_name;
+			return data;
+		}
+
+		// 取得battle_monster中總共有哪些篇章
+		public string[] getBattleMonsterChaper(){
+			string[] chapter = monster_data.monster_chapter.Keys.ToArray ();
+			return chapter;
+		}
+
+		// 取得battle_monster中總共有哪些難度
+		public string[] getBattleMonsterHard(){
+			string[] hard = monster_data.monster_hard.Keys.ToArray ();
+			return hard;
+		}
+
+		// 取得battle_monster中總共有哪些屬性
+		public string[] getBattleMonsterAttr(){
+			int[] attr = monster_data.monster_attr.Keys.ToArray();
+			string [] attr_list = new string[attr.Length];
+			for( int i = 0; i < attr.Length ; i++ ){
+				attr_list[i] = attr[i].ToString();
+			}
+			return attr_list;
+		}
 
         //Monster or Hero Node 資料結構
         public class csUnit

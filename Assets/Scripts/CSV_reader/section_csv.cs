@@ -11,13 +11,21 @@ public class section_csv : CSV_reader {
 		public string chapter_name;
 		public string section_name;
 	};
-
+	
 	private List<string> keys = new List<string>(new string[] {"編號", "章節-PM", "名稱", "對應章編號"});
 	public Dictionary <int, csv_row> csv_table = new Dictionary<int, csv_row>();
+	
+	//public Dictionary <string, List<section_row>> section = new Dictionary<string, List<section_row>>();
+	public Dictionary <string, Dictionary<string, int>> section_list = new Dictionary<string, Dictionary<string, int>>();
 	
 	public void init () {
 		SplitCsv (keys.ToArray(), csv_path);
 		Debug.Log ("section_csv done");
+/*
+		foreach (section_row data in section["序章"]) {
+			Debug.Log ( "name:"+data.section_name+" id:"+data.section_id );
+		}
+*/
 	}
 
 	public override void setCsvData(string[] row)
@@ -43,5 +51,13 @@ public class section_csv : CSV_reader {
 			}
 		}
 		csv_table.Add (section_id, data);
+
+		if( section_list.ContainsKey(data.chapter_name) ){
+			section_list[data.chapter_name][data.section_name] = section_id;
+		} else {
+			var tmp = new Dictionary<string, int>(){{data.section_name, section_id}};
+			section_list.Add ( data.chapter_name, tmp );
+		}
+
 	}
 }
