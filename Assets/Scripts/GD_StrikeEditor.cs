@@ -11,7 +11,7 @@ namespace Gamesofa
 	public class GD_StrikeEditor : MonoBehaviour
     {
         public const int HeroCount = 4;
-        public const int MonsterCount = 5;
+        public const int MonsterCount = 6;
         public const int BossCount = 10;
 
 		public UITexture[] TextureArray = null;
@@ -46,6 +46,10 @@ namespace Gamesofa
 		public int select_chapter;
 		public int use_soldier_num;
 
+		public bool[] select_ch;
+		public bool[] select_hard;
+		public bool[] select_attr;
+
 		void Update()
 		{
 			ShowCoordinate();
@@ -75,7 +79,9 @@ namespace Gamesofa
                 }
             }
 
-            Monster = RandomMonsterPos();
+			select_ch = new bool[getBattleMonsterChaper().Length];
+			select_hard = new bool[getBattleMonsterHard().Length];
+			select_attr = new bool[getBattleMonsterAttr().Length];
         }
 
 		public void LoadCsv()
@@ -242,13 +248,13 @@ namespace Gamesofa
 		}
 
         //建立場景怪物
-        public void Create()
+        public void CreateMonster()
         {
-            Clear();
+            ClearMonster();
 
 			if ( formation_data.csv_table.ContainsKey(FormationIndex) )
             {
-                for (int i = 0; i < BossCount; i++)
+				for (int i = 0; i < MonsterCount; i++)
                 {
 					if (i < formation_data.csv_table[FormationIndex].num)
                     {
@@ -274,6 +280,7 @@ namespace Gamesofa
                         obj.GetComponent<UIWidget>().MakePixelPerfect();
 
                         obj.layer = Layer;
+						obj.tag = "monster";
                         obj.name = monster.monster_id.ToString();
                         obj.transform.parent = this.gameObject.transform;
 						obj.transform.localScale = new Vector3(Convert.ToSingle(monster.scale), Convert.ToSingle(monster.scale), 1f);
@@ -347,10 +354,110 @@ namespace Gamesofa
             return list;
         }
 
+		public List<int> CreateRandomMonster ()
+		{
+			List<int> random_list_cd1 = new List<int>();
+			List<int> random_list_cd6 = new List<int>();
+			List<int> list = new List<int>();
+			System.Random rnd = new System.Random();
+			HashSet<int> generated = new HashSet<int>();
+
+			string[] chapter_list = getBattleMonsterChaper ();
+			string[] hard_list = getBattleMonsterHard ();
+			int[] attr_list = monster_data.monster_attr.Keys.ToArray();
+
+			foreach (KeyValuePair<int, monster_csv.csv_row> keyValue in monster_data.csv_table ) {
+				monster_csv.csv_row monster_info = keyValue.Value;
+				bool chapter_flag = false;
+				bool hard_flag = false;
+				bool attr_flag = false;
+
+				// 檢查chapter是否在選擇中
+				for( int i =0 ; i< chapter_list.Length ; i ++ ){
+					if( chapter_list[i].Equals(monster_info.chapter) ){
+						if( select_ch[i] )
+							chapter_flag = true;
+
+						break;
+					}
+				}
+				
+				if( !chapter_flag )
+					continue;
+
+				// 檢查hard是否在選擇中
+				for( int i =0 ; i< hard_list.Length ; i++ ){
+					if( hard_list[i].Equals( monster_info.hard ) ){
+						if( select_hard[i] )
+							hard_flag = true;
+
+						break;
+					}
+				}
+
+				if( !hard_flag )
+					continue;
+
+				// 檢查屬性是否在選擇中
+				for( int i=0 ; i<attr_list.Length ; i++ ){
+					if( attr_list[i] == monster_info.attr ){
+						if( select_attr[i] )
+							attr_flag = true;
+
+						break;
+					}
+				}
+
+				if( !attr_flag )
+					continue;
+
+				if( monster_info.cd == 1 ){
+					random_list_cd1.Add (monster_info.id);
+				} else if( monster_info.cd == 6 ){
+					random_list_cd6.Add (monster_info.id);
+				}
+			}
+
+			if (random_list_cd1.Count < use_soldier_num) {
+				Debug.Log ("可用怪物數不夠#1");
+				return list;
+			}
+
+			if (random_list_cd6.Count < MonsterCount - use_soldier_num) {
+				Debug.Log ("可用怪物數不夠#6");
+				return list;
+			}
+
+
+			for (int i = 0; i < MonsterCount; i++)	{
+				int r = 0;
+				int selected;
+				if( i < use_soldier_num ){
+					do
+					{ 
+						r = rnd.Next(random_list_cd1.Count); 
+						selected = random_list_cd1[r];
+					}
+					while (generated.Contains(selected));
+				} else {
+					do
+					{ 
+						r = rnd.Next(random_list_cd6.Count); 
+						selected = random_list_cd6[r];
+					}
+					while (generated.Contains(selected));
+				}
+				generated.Add(selected);				
+				list.Add(selected);
+			}
+
+			return list;
+		}
+
         //重置
         public void Reset()
         {
-            Clear();
+            ClearMonster();
 
             Monster.Clear();
             for (int i = 0; i < MonsterCount; i++)
@@ -367,7 +474,7 @@ namespace Gamesofa
         }
 
         //清除場景物件
-        private void Clear()
+        public void ClearMonster()
         {
             foreach (UITexture item in this.gameObject.GetComponentsInChildren<UITexture>())
             {         
@@ -420,6 +527,15 @@ namespace Gamesofa
 				attr_list[i] = attr[i].ToString();
 			}
 			return attr_list;
+		}
+
+		// 取得怪物名稱
+		public string getMonsterShow(int id){
+			if (monster_data.csv_table.ContainsKey (id)) {
+				return monster_data.csv_table [id].name+"("+monster_data.csv_table [id].cd+")"+ " HP:"+monster_data.csv_table [id].hp;
+			} else {
+				return "";
+			}
 		}
 
         //Monster or Hero Node 資料結構

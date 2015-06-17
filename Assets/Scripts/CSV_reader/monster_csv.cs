@@ -28,6 +28,7 @@ public class monster_csv : CSV_reader {
 		public float scale;
 		public string chapter;
 		public int attr;
+		public int cd;
 	};
 	
 	private List<string> keys;
@@ -45,6 +46,7 @@ public class monster_csv : CSV_reader {
 						"屬性-PM",
 						"怪物類型",
 						"星等-PM",
+						"初始CD-PM",
 						"難度說明-PM",
 						"怪物HP",
 						"盾-血量",
@@ -97,6 +99,9 @@ public class monster_csv : CSV_reader {
 				break;
 			case "星等-PM":
 				data.star = string.IsNullOrEmpty(row[item.Key])? 0 : int.Parse(row[item.Key]);
+				break;
+			case "初始CD-PM":
+				data.cd = string.IsNullOrEmpty(row[item.Key])? 0 : int.Parse(row[item.Key]);
 				break;
 			case "難度說明-PM":
 				data.hard = row[item.Key];
