@@ -12,7 +12,7 @@ namespace Gamesofa
     {
         public const int HeroCount = 4;
         public const int MonsterCount = 6;
-        public const int BossCount = 10;
+        public const int BossCount = 6;
 
 		public UITexture[] TextureArray = null;
 		public string jsonStr = "";
@@ -138,23 +138,22 @@ namespace Gamesofa
                 //如果是boss
 				if (monster_data.csv_table[monster_id].type != 0)
                 {
-                    for (int i = 0; i < GD_StrikeEditor.BossCount; i++)
-                    {
-						if (formation_data.csv_table.ContainsKey(FormationIndex) )
-						{
-                            if (i < formation_data.csv_table[FormationIndex].num)
-                            {
-								float bx = Convert.ToSingle(formation_data.csv_table[FormationIndex].enemy_point[i].x);
-								float by = Convert.ToSingle(formation_data.csv_table[FormationIndex].enemy_point[i].y);
-
-                                if (x == bx && y == by)
-                                {
-                                    Boss[i] = Convert.ToInt32(item["id"]);
-                                }
-                            }
-                        }
-                    }
-                }
+					obj.tag = "boss";
+					for (int i=0 ; i< BossCount ; i++ ){
+						if( Boss[i] == 0 ){
+							Boss[i] = monster_id;
+							break;
+						}
+					}
+                } else {
+					obj.tag = "monster";
+					for (int i=0 ; i< MonsterCount ; i++ ){
+						if( Monster[i] == 0 ){
+							Monster[i] = monster_id;
+							break;
+						}
+					}
+				}
             }
 
             ArrayList heroArr = MiniJSON.jsonDecode(json["hero"].ToString()) as ArrayList;
@@ -257,31 +256,24 @@ namespace Gamesofa
 				for (int i = 0; i < MonsterCount; i++)
                 {
 					if (i < formation_data.csv_table[FormationIndex].num)
-                    {
-                        GameObject obj = Instantiate(Resources.Load("Prefabs/Monster", typeof(GameObject))) as GameObject;
+                    {                        
 						monster_csv.csv_row monster = new monster_csv.csv_row();
+	
+						if (monster_data.csv_table.ContainsKey(Monster[i]))
+							monster = monster_data.csv_table[Monster[i]];
+						else 
+							continue;
 
+						GameObject obj = Instantiate(Resources.Load("Prefabs/Monster", typeof(GameObject))) as GameObject;
 						float x = Convert.ToSingle(formation_data.csv_table[FormationIndex].enemy_point[i].x) + DefaultX;
 						float y = Convert.ToSingle(formation_data.csv_table[FormationIndex].enemy_point[i].y) + DefaultY;
-
-                        //該位置沒有放boss
-                        if (Boss[i] == 0)
-                        {
-							if (monster_data.csv_table.ContainsKey(Monster[i]))
-								monster = monster_data.csv_table[Monster[i]];
-                        }
-                        else
-                        {
-							if (monster_data.csv_table.ContainsKey(Boss[i]))
-								monster = monster_data.csv_table[Boss[i]];                                
-                        }
 
 						obj.GetComponent<UITexture>().mainTexture = Resources.Load("Png/Role/role_" + monster.monster_id ) as Texture;
                         obj.GetComponent<UIWidget>().MakePixelPerfect();
 
                         obj.layer = Layer;
 						obj.tag = "monster";
-                        obj.name = monster.monster_id.ToString();
+						obj.name = Monster[i].ToString();
                         obj.transform.parent = this.gameObject.transform;
 						obj.transform.localScale = new Vector3(Convert.ToSingle(monster.scale), Convert.ToSingle(monster.scale), 1f);
                         obj.transform.localPosition = new Vector3(x, y, 0f);
@@ -293,6 +285,37 @@ namespace Gamesofa
                 Debug.LogWarning("Error 沒有對應的陣型編號 無法建立場景!!!");
             }
         }
+
+		//建立場景Boss
+		public void CreateBoss()
+		{
+			ClearBoss();
+			
+			for (int i = 0; i < BossCount; i++)
+			{
+				monster_csv.csv_row boss = new monster_csv.csv_row();
+											
+				//該位置沒有放boss
+				if (monster_data.csv_table.ContainsKey(Boss[i]))
+					boss = monster_data.csv_table[Boss[i]];
+				else
+					continue;
+
+				GameObject obj = Instantiate(Resources.Load("Prefabs/Monster", typeof(GameObject))) as GameObject;
+				float x = 0 + DefaultX;
+				float y = 0 + DefaultY;
+
+				obj.GetComponent<UITexture>().mainTexture = Resources.Load("Png/Role/role_" + boss.monster_id ) as Texture;
+				obj.GetComponent<UIWidget>().MakePixelPerfect();
+						
+				obj.layer = Layer;
+				obj.tag = "boss";
+				obj.name = Boss[i].ToString();
+				obj.transform.parent = this.gameObject.transform;
+				obj.transform.localScale = new Vector3(Convert.ToSingle(boss.scale), Convert.ToSingle(boss.scale), 1f);
+				obj.transform.localPosition = new Vector3(x, y, 0f);
+			}
+		}
 
         //建立英雄
         public void CreateHero()
@@ -458,6 +481,7 @@ namespace Gamesofa
         public void Reset()
         {
             ClearMonster();
+			ClearBoss();
 
             Monster.Clear();
             for (int i = 0; i < MonsterCount; i++)
@@ -478,13 +502,24 @@ namespace Gamesofa
         {
             foreach (UITexture item in this.gameObject.GetComponentsInChildren<UITexture>())
             {         
-                if (item != null)
+                if (item != null && item.tag.Equals("monster") )
                 {
                     DestroyImmediate(item.gameObject);
                 }
             }
         }
-		
+
+		public void ClearBoss()
+		{
+			foreach (UITexture item in this.gameObject.GetComponentsInChildren<UITexture>())
+			{         
+				if (item != null && item.tag.Equals("boss") )
+				{
+					DestroyImmediate(item.gameObject);
+				}
+			}
+		}
+
 		public struct section_info{
 			public int section_id;
 			public string section_name;

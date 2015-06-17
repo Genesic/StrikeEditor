@@ -320,12 +320,12 @@ public class GD_StrikeEditorInspector : GD_EditorBase<GD_StrikeEditor>
             }
         }
 */        
-		if (GUILayout.Button("清除小兵", GUILayout.Height(30f)))
+		if (GUILayout.Button("清除場上小兵", GUILayout.Height(30f)))
 		{
 			this.Target.ClearMonster();
 		}
 
-        if (GUILayout.Button("產生小兵", GUILayout.Height(30f)))
+        if (GUILayout.Button("產生場上小兵", GUILayout.Height(30f)))
         {
 			this.Target.CreateMonster();
         }
@@ -338,25 +338,32 @@ public class GD_StrikeEditorInspector : GD_EditorBase<GD_StrikeEditor>
 		
         #region Boss 位置設定
 
-        EditorGUILayout.LabelField("【新增陷阱】");
+        EditorGUILayout.LabelField("【新增陷阱或BOSS】");
 
 		for (int i = 0; i < GD_StrikeEditor.BossCount; i++) {
 			GUILayout.BeginHorizontal();
 
-			GUILayout.Label(" 編號", GUILayout.Width(40f) );
+			GUILayout.Label("編號"+(i+1), GUILayout.Width(40f) );
 			this.Target.Boss[i] = EditorGUILayout.IntField( this.Target.Boss[i], GUILayout.MaxWidth(50));
 			GUILayout.Label(" "+this.Target.getMonsterShow(this.Target.Boss[i]), GUILayout.Width(300f));
 			GUILayout.EndHorizontal();
 		}
 
-		if (GUILayout.Button("清除小兵", GUILayout.Height(30f)))
+		GUILayout.BeginHorizontal();
+		if (GUILayout.Button("清除陷阱編號", GUILayout.Height(30f)))
 		{
-			//this.Target.ClearBoss();
+			for (int i = 0; i < this.Target.Boss.Count ; i++)
+				this.Target.Boss[i] = 0;
 		}
-		if (GUILayout.Button("產生", GUILayout.Height(30f)))
+		if (GUILayout.Button("清除場上陷阱", GUILayout.Height(30f)))
 		{
-			//this.Target.CreateBoss();
+			this.Target.ClearBoss();
 		}
+		if (GUILayout.Button("產生場上陷阱", GUILayout.Height(30f)))
+		{
+			this.Target.CreateBoss();
+		}
+		GUILayout.EndHorizontal();
 /*		
         for (int i = 0; i < GD_StrikeEditor.BossCount; i++)
         {
