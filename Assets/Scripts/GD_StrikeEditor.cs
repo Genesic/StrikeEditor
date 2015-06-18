@@ -454,7 +454,32 @@ namespace Gamesofa
 				return list;
 			}
 
+			// 建立cd1跟cd6的mapping
+			Dictionary <int, int> cd1_mapping_cd6 = new Dictionary<int, int> ();
+			for (int i = 0; i< random_list_cd1.Count; i++) {
+				int cd1_id = monster_data.csv_table[random_list_cd1[i]].id;
+				int cd1_monster_id = monster_data.csv_table[random_list_cd1[i]].monster_id;
+				string cd1_chapter = monster_data.csv_table[random_list_cd1[i]].chapter;
+				string cd1_hard = monster_data.csv_table[random_list_cd1[i]].hard;
+				int cd1_attr = monster_data.csv_table[random_list_cd1[i]].attr;
+				for( int j =0; j< random_list_cd6.Count; j++ ){
+					int cd6_id = monster_data.csv_table[random_list_cd6[j]].id;
+					int cd6_monster_id = monster_data.csv_table[random_list_cd6[j]].monster_id;
+					string cd6_chapter = monster_data.csv_table[random_list_cd6[j]].chapter;
+					string cd6_hard = monster_data.csv_table[random_list_cd6[j]].hard;
+					int cd6_attr = monster_data.csv_table[random_list_cd6[j]].attr;
+					if( cd6_monster_id == cd1_monster_id 
+					   && cd1_chapter.Equals(cd6_chapter) 
+					   && cd1_hard.Equals(cd6_hard) && 
+					   cd1_attr == cd6_attr ){
+						cd1_mapping_cd6.Add( cd1_id, cd6_id );
+						break;
+					}
 
+				}
+			}
+
+			HashSet<int> addition = new HashSet<int>();
 			for (int i = 0; i < MonsterCount; i++)	{
 				int r = 0;
 				int selected;
@@ -465,13 +490,19 @@ namespace Gamesofa
 						selected = random_list_cd1[r];
 					}
 					while (generated.Contains(selected));
+					addition.Add( cd1_mapping_cd6[selected] );
 				} else {
-					do
-					{ 
-						r = rnd.Next(random_list_cd6.Count); 
-						selected = random_list_cd6[r];
+					if( addition.Count > 0 ) {
+						selected = addition.First();
+						addition.Remove(selected);
+					} else {
+						do
+						{ 
+							r = rnd.Next(random_list_cd6.Count); 
+							selected = random_list_cd6[r];
+						}
+						while (generated.Contains(selected));
 					}
-					while (generated.Contains(selected));
 				}
 				generated.Add(selected);				
 				list.Add(selected);
