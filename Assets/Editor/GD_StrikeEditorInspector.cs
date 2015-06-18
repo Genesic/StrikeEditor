@@ -38,35 +38,7 @@ public class GD_StrikeEditorInspector : GD_EditorBase<GD_StrikeEditor>
         EditorGUIUtility.LookLikeControls();
         EditorGUILayout.Separator();
 		Color lastcolor = GUI.backgroundColor;
-/*
-        #region 重置 & 建立
 
-        EditorGUILayout.LabelField("【重置 & 建立】");
-
-        GUILayout.BeginHorizontal();
-
-        Color lastcolor = GUI.backgroundColor;
-
-        GUI.backgroundColor = Color.magenta;
-
-        if (GUILayout.Button("All Reset", GUILayout.Height(30f)))
-        {
-            this.Target.Reset();
-        }
-
-        if (GUILayout.Button("Create", GUILayout.Height(30f)))
-        {
-            this.Target.Create();
-        }
-
-        GUILayout.EndHorizontal();
-
-        GUI.backgroundColor = lastcolor;
-
-        #endregion 重置 & 建立
-
-        EditorGUILayout.Separator();
-*/
         #region 讀取Json & 存檔Json
 
 		GUIStyle title_style = new GUIStyle();
@@ -133,36 +105,8 @@ public class GD_StrikeEditorInspector : GD_EditorBase<GD_StrikeEditor>
 
         GUI.backgroundColor = lastcolor;
 
-        #endregion 讀取Json & 存檔Json
-/*
-        EditorGUILayout.Separator();
+		#endregion 讀取Json & 存檔Json
 
-		#region 重置 & 建立
-		
-		EditorGUILayout.LabelField("【重置 & 建立】");
-		
-		GUILayout.BeginHorizontal();
-		
-		//Color lastcolor = GUI.backgroundColor;
-		
-		GUI.backgroundColor = Color.magenta;
-		
-		if (GUILayout.Button("All Reset", GUILayout.Height(30f)))
-		{
-			this.Target.Reset();
-		}
-		
-		if (GUILayout.Button("Create", GUILayout.Height(30f)))
-		{
-			this.Target.Create();
-		}
-		
-		GUILayout.EndHorizontal();
-		
-		GUI.backgroundColor = lastcolor;
-
-		#endregion 重置 & 建立
-*/		
 		EditorGUILayout.Separator();
 
         #region 陣型編號
@@ -175,12 +119,7 @@ public class GD_StrikeEditorInspector : GD_EditorBase<GD_StrikeEditor>
         this.Target.FormationIndex = EditorGUILayout.IntField("陣型編號", this.Target.FormationIndex, GUILayout.Width(250));
 
         GUILayout.EndHorizontal();
-
-        //if (GUILayout.Button("陣型編號 Reset", GUILayout.Height(30f)))
-        //{
-         //   this.Target.FormationIndex = 0;
-        //}
-
+		
         #endregion 陣型編號
 
         EditorGUILayout.Separator();
@@ -311,15 +250,7 @@ public class GD_StrikeEditorInspector : GD_EditorBase<GD_StrikeEditor>
         }
 
         GUILayout.BeginHorizontal();
-/*
-        if (GUILayout.Button("小兵 Reset", GUILayout.Height(30f)))
-        {
-            for (int i = 0; i < GD_StrikeEditor.MonsterCount; i++)
-            {
-                this.Target.Monster[i] = 0;
-            }
-        }
-*/        
+
 		if (GUILayout.Button("清除場上小兵", GUILayout.Height(30f)))
 		{
 			this.Target.ClearMonster();
@@ -364,61 +295,8 @@ public class GD_StrikeEditorInspector : GD_EditorBase<GD_StrikeEditor>
 			this.Target.CreateBoss();
 		}
 		GUILayout.EndHorizontal();
-/*		
-        for (int i = 0; i < GD_StrikeEditor.BossCount; i++)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (GD_XmlData.Formation.ContainsKey(this.Target.FormationIndex.ToString("D4")))
-            {
-
-                if (i < Convert.ToInt32(GD_XmlData.Formation[this.Target.FormationIndex.ToString("D4")].PeopleNum))
-                {
-                    this.Target.Boss[i] = EditorGUILayout.IntField("位置" + (i + 1) + " Boss編號", this.Target.Boss[i], GUILayout.Width(250));
-
-					//string x = this.Target.FormationX[this.Target.FormationIndex.ToString("D4")][i];
-					//string y = this.Target.FormationY[this.Target.FormationIndex.ToString("D4")][i];
-					string x = this.Target.formation_data.csv_table[this.Target.FormationIndex].enemy_point[i].x.ToString();
-					string y = this.Target.formation_data.csv_table[this.Target.FormationIndex].enemy_point[i].y.ToString();
-                    EditorGUILayout.LabelField("  X : " + x + "  Y : " + y);
-                }
-            }       
-
-            GUILayout.EndHorizontal();
-        }
-
-        if (GUILayout.Button("Boss Reset", GUILayout.Height(30f)))
-        {
-            for (int i = 0; i < GD_StrikeEditor.BossCount; i++)
-            {
-                this.Target.Boss[i] = 0;
-            }
-        }
-*/
         #endregion Boss 位置設定
-/*
-        EditorGUILayout.Separator();
 
-        #region 英雄編號
-
-        EditorGUILayout.LabelField("【設定 出場英雄位置】");
-
-        GUILayout.BeginHorizontal();
-
-        if (GUILayout.Button("刪除英雄", GUILayout.Height(30f)))
-        {
-            this.Target.ClearHero();
-        }
-
-        if (GUILayout.Button("建立英雄", GUILayout.Height(30f)))
-        {
-            this.Target.CreateHero();
-        }
-
-        GUILayout.EndHorizontal();
-
-        #endregion 英雄編號
-*/
         //base.OnInspectorGUI();
 	}
 

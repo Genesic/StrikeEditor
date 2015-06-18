@@ -11,7 +11,7 @@ namespace Gamesofa
 	public class GD_StrikeEditor : MonoBehaviour
     {
         public const int HeroCount = 4;
-        public const int MonsterCount = 6;
+        public const int MonsterCount = 8;
         public const int BossCount = 6;
 
 		public UITexture[] TextureArray = null;
@@ -134,6 +134,7 @@ namespace Gamesofa
                 obj.transform.parent = this.gameObject.transform;
                 obj.transform.localScale = new Vector3(sx, sy, 1f);
 				obj.transform.localPosition = new Vector3(x+DefaultX, y+DefaultY, 0f);
+				obj.GetComponent<GD_MonsterEditor>().init ( monster_data.csv_table[monster_id] );
 
                 //如果是boss
 				if (monster_data.csv_table[monster_id].type != 0)
@@ -277,6 +278,7 @@ namespace Gamesofa
                         obj.transform.parent = this.gameObject.transform;
 						obj.transform.localScale = new Vector3(Convert.ToSingle(monster.scale), Convert.ToSingle(monster.scale), 1f);
                         obj.transform.localPosition = new Vector3(x, y, 0f);
+						obj.GetComponent<GD_MonsterEditor>().init ( monster_data.csv_table[Monster[i]] );
                     }
                 }
             }
@@ -314,6 +316,7 @@ namespace Gamesofa
 				obj.transform.parent = this.gameObject.transform;
 				obj.transform.localScale = new Vector3(Convert.ToSingle(boss.scale), Convert.ToSingle(boss.scale), 1f);
 				obj.transform.localPosition = new Vector3(x, y, 0f);
+				obj.GetComponent<GD_MonsterEditor>().init ( monster_data.csv_table[Boss[i]] );
 			}
 		}
 
