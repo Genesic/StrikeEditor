@@ -39,6 +39,7 @@ public class monster_csv : CSV_reader {
 	public Dictionary <int, int> monster_attr = new Dictionary<int, int>();
 	
 	public void init () {
+		csv_table = new Dictionary<int, csv_row> ();
 		keys = new List<string> (new string[] {
 						"編號",
 						"怪物id",

@@ -8,10 +8,12 @@ public class battle_csv : CSV_reader {
 		public int section;
 	};
 
-	private List<string> keys = new List<string>(new string[] {"編號", "對應節編號"});
-	public Dictionary <int, csv_row> csv_table = new Dictionary<int, csv_row>();
+	private List<string> keys;
+	public Dictionary <int, csv_row> csv_table;
 
 	public void init () {
+		keys = new List<string>(new string[] {"編號", "對應節編號"});
+		csv_table = new Dictionary<int, csv_row> ();
 		SplitCsv (keys.ToArray(), csv_path);
 		Debug.Log ("battle_csv done");
 	}

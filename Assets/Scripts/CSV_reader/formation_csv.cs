@@ -14,6 +14,7 @@ public class formation_csv : CSV_reader {
 	public Dictionary <int, csv_row> csv_table = new Dictionary<int, csv_row>();
 
 	public void init(){
+		csv_table = new Dictionary<int, csv_row> ();
 		keys = new List<string>(new string[]{"陣型編號","適用人數"});
 		for (int i = 1; i <= 9; i++) {
 			string point_x = "座標"+i+"x";

@@ -8,10 +8,11 @@ public class CSV_reader : MonoBehaviour {
 	public string csv_path;
 	public int chinese_line = 0;
 	public int english_line = 1;
-	public Dictionary <int, string> key_list = new Dictionary<int, string>();
+	public Dictionary <int, string> key_list;
 
 	public void setKeylist(string[] keys, string line)
 	{
+		key_list = new Dictionary<int, string> ();
 		string[] key_column = SplitCsvLine (line);
 		for (int x = 0 ; x< key_column.Length ; x++){
 			foreach( string key_name in keys ){

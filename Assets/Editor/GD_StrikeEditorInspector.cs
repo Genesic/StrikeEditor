@@ -18,26 +18,33 @@ public class GD_StrikeEditorInspector : GD_EditorBase<GD_StrikeEditor>
 	private static string[] bmHard;
 	private static string[] bmAttr;
 
+	public void init(){
+		this.Target.Reset();
+		this.Target.LoadCsv();            
+		this.Target.Init();
+		bmChapter = this.Target.getBattleMonsterChaper();
+		bmHard = this.Target.getBattleMonsterHard();
+		bmAttr = this.Target.getBattleMonsterAttr();
+		select_chapter = new bool[bmChapter.Length];
+		select_hard = new bool[bmHard.Length];
+		select_attr = new bool[bmAttr.Length];
+	}
+
 	public override void OnInspectorGUI ()
 	{
         if (!isFirst)
         {
             isFirst = true;
-            this.Target.Reset();
-			this.Target.LoadCsv();
-            //this.Target.LoadXml();
-            this.Target.Init();
-			bmChapter = this.Target.getBattleMonsterChaper();
-			bmHard = this.Target.getBattleMonsterHard();
-			bmAttr = this.Target.getBattleMonsterAttr();
-			select_chapter = new bool[bmChapter.Length];
-			select_hard = new bool[bmHard.Length];
-			select_attr = new bool[bmAttr.Length];
+			init ();
         }
 
         EditorGUIUtility.LookLikeControls();
         EditorGUILayout.Separator();
 		Color lastcolor = GUI.backgroundColor;
+
+		if (GUILayout.Button ("Reload Csv", GUILayout.Height (20f))) {
+			init ();
+		}
 
         #region 讀取Json & 存檔Json
 

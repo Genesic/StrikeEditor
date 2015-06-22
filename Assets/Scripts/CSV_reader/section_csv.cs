@@ -12,13 +12,15 @@ public class section_csv : CSV_reader {
 		public string section_name;
 	};
 	
-	private List<string> keys = new List<string>(new string[] {"編號", "章節-PM", "名稱", "對應章編號"});
+	private List<string> keys;
 	public Dictionary <int, csv_row> csv_table = new Dictionary<int, csv_row>();
 	
 	//public Dictionary <string, List<section_row>> section = new Dictionary<string, List<section_row>>();
 	public Dictionary <string, Dictionary<string, int>> section_list = new Dictionary<string, Dictionary<string, int>>();
 	
 	public void init () {
+		keys = new List<string>(new string[] {"編號", "章節-PM", "名稱", "對應章編號"});
+		csv_table = new Dictionary<int, csv_row> ();
 		SplitCsv (keys.ToArray(), csv_path);
 		Debug.Log ("section_csv done");
 /*
